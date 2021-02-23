@@ -107,7 +107,6 @@ df <- data %>%
 
 df <- df %>% 
   mutate(statename = as.factor(statename),
-         cregion = as.factor(cregion),
          cenreg = as.factor(cenreg),
          sex = as.factor(sex),
          racecmb = as.factor(racecmb),
@@ -127,24 +126,24 @@ df <- df %>%
          racerel = as.factor(q60uf2))
 
 
-df$statename <- as.factor(df$statename)
-df$cregion <- as.factor(df$cregion)
-df$cenreg <- as.factor(df$cenreg)
-df$sex <- as.factor(df$sex)
-df$racecmb <- as.factor(df$racecmb)
-df$racethn <- as.factor(df$racethn)
-df$relig <- as.factor(df$relig)
-df$chr <- as.factor(df$chr)
-df$party <- as.factor(df$party)
-df$partyln <- as.factor(df$partyln)
-df$partystr <- as.factor(df$partystr)
-df$reg <- as.factor(df$reg)
-df$income <- as.factor(df$income)
-df$q46a <- as.factor(df$q46a)
-df$q46b <- as.factor(df$q46b)
-df$q46c <- as.factor(df$q46c)
-df$q46d <- as.factor(df$q46d)
-df$q60pf2 <- as.factor(df$q60pf2)
-df$q60uf2 <- as.factor(df$q60uf2)
+# df$statename <- as.factor(df$statename)
+# df$cregion <- as.factor(df$cregion)
+# df$cenreg <- as.factor(df$cenreg)
+# df$sex <- as.factor(df$sex)
+# df$racecmb <- as.factor(df$racecmb)
+# df$racethn <- as.factor(df$racethn)
+# df$relig <- as.factor(df$relig)
+# df$chr <- as.factor(df$chr)
+# df$party <- as.factor(df$party)
+# df$partyln <- as.factor(df$partyln)
+# df$partystr <- as.factor(df$partystr)
+# df$reg <- as.factor(df$reg)
+# df$income <- as.factor(df$income)
+# df$q46a <- as.factor(df$q46a)
+# df$q46b <- as.factor(df$q46b)
+# df$q46c <- as.factor(df$q46c)
+# df$q46d <- as.factor(df$q46d)
+# df$q60pf2 <- as.factor(df$q60pf2)
+# df$q60uf2 <- as.factor(df$q60uf2)
 
 ```
