@@ -9,22 +9,142 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+# Libraries
+```{r}
+library(tidyverse)
+library(here)
+library(rio)
+library(psych)
+library(forcats)
+library(scales)
+library(lme4)
+library(plyr)
+library(dplyr)
+library(colorspace)
 ```
 
-## Including Plots
+# Data
+```{r}
+data <- import(here::here("Jan20public.sav"))
 
-You can also embed plots, for example:
+data <- data %>% 
+  filter(qs1 == 2 & comp == 1)
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+data$statename <- revalue(as.factor(data$state), c(
+                        "1" = "Alabama",
+                        "2" = "Alaska",
+                        "4" = "Arizona",
+                        "5" = "Arkansas",
+                        "6" = "California",
+                        "8" = "Colorado",
+                        "9" = "Connecticut",
+                        "10" = "D.C.",
+                        "11" = "Delaware",
+                        "12" = "Florida",
+                        "13" = "Georgia",
+                        "15" = "Hawaii",
+                        "16" = "Idaho",
+                        "17" = "Illinois",
+                        "18" = "Indiana",
+                        "19" = "Iowa",
+                        "20" = "Kansas",
+                        "21" = "Kentucky",
+                        "22" = "Louisiana",
+                        "23" = "Maine",
+                        "24" = "Maryland",
+                        "25" = "Massachusetts",
+                        "26" = "Michigan",
+                        "27" = "Minnesota",
+                        "28" = "Mississippi",
+                        "29" = "Missouri",
+                        "30" = "Montana",
+                        "31" = "Nebraska",
+                        "32" = "Nevada",
+                        "33" = "New Hampshire",
+                        "34" = "New Jersey",
+                        "35" = "New Mexico",
+                        "36" = "New York",
+                        "37" = "North Carolina",
+                        "38" = "North Dakota",
+                        "39" = "Ohio",
+                        "40" = "Oklahoma",
+                        "41" = "Oregon",
+                        "42" = "Pennsylvania",
+                        "44" = "Rhode Island",
+                        "45" = "South Carolina",
+                        "46" = "South Dakota",
+                        "47" = "Tennessee",
+                        "48" = "Texas",
+                        "49" = "Utah",
+                        "50" = "Vermont",
+                        "51" = "Virginia",
+                        "53" = "Washington",
+                        "54" = "West Virginia",
+                        "55" = "Wisconsin",
+                        "56" = "Wyoming"))
+
+df <- data %>% 
+  select(statename, cregion, usr,
+         starts_with("q10"), # relations btwn grps (a = poor/rich, b = black/white, c = city/rural, d = young/old, e = dem/rep)
+         starts_with("q25"), # attribution of wealth (poor)
+         starts_with("q26"), # attribution of wealth (rich)
+         starts_with("q42"), # free college
+         starts_with("q45"), # dealth penalty
+         starts_with("q46"), # death penalty explanation (a = deter, b = murder, c = minority, d = innocent)
+         starts_with("q50"), # opinion towards govt bodies (a - GOP, b = dem party, c = congress, d = supreme court)
+         starts_with("q51"), # opinon of ppl (a = pope, b = putin, c = bejamin netanyahu)
+         starts_with("q53"), # preferred election method
+         q60pf2, # priorities for congress and trump (global warming)
+         q60uf2, # priorities for congress and trump (race relations)
+         sex, age, educ, racecmb, racethn, relig, chr, attend, income, reg, party, partyln, partystr, ideo, # demographics
+         starts_with("q101"), starts_with("q102"), # volunteering
+         respid, sample, form, # survey details
+         -q100) %>% 
+  mutate(cenreg = if_else(cregion == "3", "South",
+                             if_else(cregion == "2", "Midwest",
+                                     if_else(cregion == "1", "Northeast", "West"))))
+
+df <- df %>% 
+  mutate(statename = as.factor(statename),
+         cregion = as.factor(cregion),
+         cenreg = as.factor(cenreg),
+         sex = as.factor(sex),
+         racecmb = as.factor(racecmb),
+         racethn = as.factor(racethn),
+         relig = as.factor(relig), 
+         chr = as.factor(chr),
+         party = as.factor(party),
+         partyln = as.factor(partyln),
+         partystr = as.factor(partystr),
+         reg = as.factor(reg),
+         income = as.factor(income),
+         dpensrs = as.factor(q46a),
+         dpenmur  = as.factor(q46b),
+         dpenrace = as.factor(q46c),
+         dpeninn = as.factor(q46d),
+         glowar = as.factor(q60pf2),
+         racerel = as.factor(q60uf2))
+
+
+df$statename <- as.factor(df$statename)
+df$cregion <- as.factor(df$cregion)
+df$cenreg <- as.factor(df$cenreg)
+df$sex <- as.factor(df$sex)
+df$racecmb <- as.factor(df$racecmb)
+df$racethn <- as.factor(df$racethn)
+df$relig <- as.factor(df$relig)
+df$chr <- as.factor(df$chr)
+df$party <- as.factor(df$party)
+df$partyln <- as.factor(df$partyln)
+df$partystr <- as.factor(df$partystr)
+df$reg <- as.factor(df$reg)
+df$income <- as.factor(df$income)
+df$q46a <- as.factor(df$q46a)
+df$q46b <- as.factor(df$q46b)
+df$q46c <- as.factor(df$q46c)
+df$q46d <- as.factor(df$q46d)
+df$q60pf2 <- as.factor(df$q60pf2)
+df$q60uf2 <- as.factor(df$q60uf2)
+
 ```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
