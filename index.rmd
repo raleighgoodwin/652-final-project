@@ -1,9 +1,13 @@
 ---
-title: "Untitled"
+title: "Final Project Dashboard"
+runtime: shiny
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
     vertical_layout: fill
+    theme: united
+    social: menu
+    source_code: https://raleighgoodwin.github.io/652-final-project/.
 ---
 
 ```{r setup, include=FALSE}
